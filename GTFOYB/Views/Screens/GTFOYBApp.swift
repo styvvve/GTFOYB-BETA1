@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct GTFOYBApp: App {
@@ -13,5 +14,6 @@ struct GTFOYBApp: App {
         WindowGroup {
             ContentView()
         }
+        .modelContainer(for: Alarm.self)
     }
 }
