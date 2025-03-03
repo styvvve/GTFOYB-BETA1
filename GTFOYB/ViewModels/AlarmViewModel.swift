@@ -33,6 +33,15 @@ class AlarmViewModel {
         fetchAlarms() //recuperer toutes les alarmes
     }
     
+    //fonction pour sauv -> lorsqu'on desa ou active une alarme
+    func toggleAlarm(alarm: Alarm) {
+        do {
+            try modelContext.save()
+        }catch {
+            //on va gerer l'erreur apres
+        }
+    }
+    
     //modifier une alarme
     func updateAlarm(alarm: Alarm, newName: String, newTime: Date, newRingtone: String, newIsActive: Bool, newDays: [Days], newMission: WakeUpMission) {
         alarm.name = newName

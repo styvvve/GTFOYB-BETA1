@@ -38,6 +38,14 @@ class Alarm: Identifiable {
     var formattedTime: String {
         return formatter.string(from: time)
     }
+    
+    var formattedShortDays: String {
+        return days.map { $0.shortName }.joined(separator: ", ")
+    }
+    
+    var formattedDays: String {
+        return days.map { $0.localizedName }.joined(separator: ", ")
+    }
 }
 
 //MARK: preview
