@@ -6,19 +6,35 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct HomeView: View {
+    
+    //on prend des instances des deux viewModel
+    @EnvironmentObject var alarmViewModel: AlarmViewModel
+    @EnvironmentObject var userViewModel: UserViewModel
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        TabView {
+            Tab("Alarms", systemImage: "alarm.fill") {
+                AlarmScrollView()
+            }
+            
+            Tab("Sleep", systemImage: "moon.fill") {
+                
+            }
+            
+            Tab("Settings", systemImage: "gear") {
+                
+            }
         }
-        .padding()
     }
 }
 
 #Preview {
+    let alarmViewModel = AlarmViewModel(dataSource: .shared)
+    let userViewModel = UserViewModel(dataSource: .shared)
     HomeView()
+        .environmentObject(alarmViewModel)
+        .environmentObject(userViewModel)
 }

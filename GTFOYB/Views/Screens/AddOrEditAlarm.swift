@@ -10,17 +10,22 @@ import SwiftData
 
 //si on passe en mode edit = une alarme doit etre fournie
 protocol alarmEditModeRequirement {
-    
+    var editMode: Bool { get }
+    var alarm: Alarm? { get }
 }
 
-struct AddOrEditAlarm: View {
+struct AddOrEditAlarm: View, alarmEditModeRequirement {
     
     //instance de viewModel
-    @State private var viewModel: AlarmViewModel
+    @EnvironmentObject var alarmViewModel: AlarmViewModel
+    @EnvironmentObject var userViewModel: UserViewModel
+    
+    //pour fermer l écran
+    @Environment(\.dismiss) var dismiss
     
     //definir si c'est en edit mode ou pas
-    @Binding var editMode: Bool
-    //recuperation de l'alarme si c'est le cas
+    @State var editMode: Bool
+    //recuperation de l'alarme si c'est le cas ou on va creer une alarme lorsqu'il veut en sauvegarder une
     let alarm: Alarm?
     
     //les proprietes auquel on aura accès
@@ -61,7 +66,7 @@ struct AddOrEditAlarm: View {
                                 .multilineTextAlignment(.trailing)
                         }
                         NavigationLink {
-                            
+                            PickDatesView(days: $days)
                         }label: {
                             HStack {
                                 Text("Repeat")
@@ -71,7 +76,7 @@ struct AddOrEditAlarm: View {
                             }
                         }
                         NavigationLink {
-                            
+                            ChooseRingtoneView(selectedRingtone: $ringtone)
                         }label: {
                             HStack {
                                 Text("Ringtone")
@@ -109,9 +114,26 @@ struct AddOrEditAlarm: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Save") {
                         if editMode {
-                            viewModel.updateAlarm(alarm: alarm!, newName: name, newTime: time, newRingtone: ringtone, newIsActive: isActive, newDays: days, newMission: missions)
+                            if let existingAlarm = alarm {
+                                existingAlarm.name = name.isEmpty ? "Alarm" : name
+                                existingAlarm.time = time
+                                existingAlarm.ringtone = ringtone
+                                existingAlarm.isActive = isActive
+                                existingAlarm.days = days
+                                existingAlarm.mission = missions
+                            }
+                            alarmViewModel.saveContext()
+                            dismiss() //on ferme l écran
                         }else {
-                            viewModel.addAlarm(name: name, time: time, ringtone: ringtone, isActive: isActive, days: days, mission: missions)
+                            let newAlarm = Alarm(
+                                name: name.isEmpty ? "Alarm" : name,
+                                time: time,
+                                ringtone: ringtone,
+                                isActive: isActive,
+                                days: days,
+                                mission: missions)
+                            alarmViewModel.addAlarm(newAlarm)
+                            addOrEditAlarmScreenIsPresenting.toggle()
                         }
                     }
                 }
@@ -126,7 +148,10 @@ struct AddOrEditAlarm: View {
                     title: Text("Do you really want to delete this alarm ?"),
                     message: Text("No going back."),
                     primaryButton: .destructive(Text("Delete")) {
-                        viewModel.deleteAlarm(alarm: alarm!)
+                        if let existingAlarm = alarm {
+                            alarmViewModel.deleteAlarm(existingAlarm)
+                            dismiss()
+                        }
                     },
                     secondaryButton: .cancel()
                 )
@@ -147,15 +172,6 @@ struct AddOrEditAlarm: View {
                 }
             }
         }
-    }
-    
-    
-    //MARK: constructeur
-    init(modelContext: ModelContext, editMode: Binding<Bool>, alarm: Alarm?, addOrEditAlarmScreenIsPresenting: Binding<Bool>) {
-        _viewModel = State(initialValue: AlarmViewModel(modelContext: modelContext))
-        self._editMode = editMode
-        self.alarm = alarm
-        self._addOrEditAlarmScreenIsPresenting = addOrEditAlarmScreenIsPresenting
     }
     
     //MARK: private methods
@@ -181,10 +197,5 @@ struct AddOrEditAlarm: View {
 }
 
 #Preview {
-    if let container = try? ModelContainer(for: Alarm.self) {
-        let modelContext = container.mainContext
-        return AddOrEditAlarm(modelContext: modelContext, editMode: .constant(false), alarm: nil, addOrEditAlarmScreenIsPresenting: .constant(true))
-    }else {
-        return Text("error")
-    }
+    AddOrEditAlarm(editMode: true, alarm: nil, addOrEditAlarmScreenIsPresenting: .constant(false))
 }

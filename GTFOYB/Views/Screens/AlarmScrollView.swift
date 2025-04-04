@@ -11,24 +11,27 @@ import SwiftData
 struct AlarmScrollView: View {
     
     //une extension du viewModel
-    @State private var viewModel: AlarmViewModel
+    @EnvironmentObject var alarmViewModel: AlarmViewModel
+    @EnvironmentObject var userViewModel: UserViewModel
+    
+    //pour ouvrir ou fermer l'écran dans le sens inverse
+    @State var addNewAlarmScreenIsPresenting = false
     
     var body: some View {
         NavigationView {
             ScrollView {
-                if viewModel.alarms.isEmpty {
+                if alarmViewModel.alarms.isEmpty {
                     Text("Add a new alarm by clicking on the plus button")
                         .padding()
                         .italic()
                         .foregroundStyle(.gray)
                 }else {
-                    ForEach(viewModel.alarms) { alarm in
+                    ForEach(alarmViewModel.alarms) { alarm in
                         NavigationLink {
-                            
+                            AddOrEditAlarm(editMode: true, alarm: alarm, addOrEditAlarmScreenIsPresenting: $addNewAlarmScreenIsPresenting)
                         }label: {
-                            AlarmCell(alarm: alarm, modelContext: viewModel.modelContext)
+                            AlarmCell(alarmViewModel: alarmViewModel, alarm: alarm)
                         }
-                        .padding()
                     }
                 }
             }
@@ -36,27 +39,19 @@ struct AlarmScrollView: View {
             .toolbar {
                 ToolbarItem {
                     Button {
-                        
+                        addNewAlarmScreenIsPresenting.toggle()
                     }label: {
                         Image(systemName: "plus")
                     }
                 }
             }
+            .fullScreenCover(isPresented: $addNewAlarmScreenIsPresenting) {
+                AddOrEditAlarm(editMode: false, alarm: nil, addOrEditAlarmScreenIsPresenting: $addNewAlarmScreenIsPresenting)
+            }
         }
-    }
-    
-    init(modelContext: ModelContext) {
-        let viewModel = AlarmViewModel(modelContext: modelContext)
-        _viewModel = State(initialValue: viewModel)
     }
 }
 
 #Preview {
-    do {
-        let container = try ModelContainer(for: Alarm.self)
-        let modelContext = container.mainContext
-        return AlarmScrollView(modelContext: modelContext)
-    }catch {
-        return Text("Error")
-    }
+    AlarmScrollView()
 }

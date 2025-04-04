@@ -11,7 +11,7 @@ import SwiftData
 struct AlarmCell: View {
     
     //une instance de viewModel
-    @State private var viewModel: AlarmViewModel
+    @ObservedObject var alarmViewModel: AlarmViewModel
     
     @Bindable var alarm: Alarm //bindable donne un objet observable pour le swiftdata
     
@@ -30,9 +30,6 @@ struct AlarmCell: View {
                 Spacer()
                 Toggle("", isOn: $alarm.isActive)
                     .toggleStyle(SwitchToggleStyle(tint: .orange))
-                    .onChange(of: alarm.isActive) {
-                        viewModel.toggleAlarm(alarm: alarm)
-                    }
             }
             
             //afficher les jours selon les diff valeurs
@@ -43,13 +40,6 @@ struct AlarmCell: View {
         .clipShape(RoundedRectangle(cornerRadius: 20))
         .frame(maxWidth: .infinity)
         .padding(.horizontal, 20)
-    }
-    
-    //MARK: Constructeur pour le viewModel
-    init(alarm: Alarm, modelContext: ModelContext) {
-        let viewModel = AlarmViewModel(modelContext: modelContext)
-        _viewModel = State(initialValue: viewModel)
-        self.alarm = alarm
     }
     
     //MARK: Private components and subview
@@ -95,12 +85,6 @@ struct AlarmCell: View {
 }
 
 #Preview {
-    do {
-        let container = try ModelContainer(for: Alarm.self)
-        let modelContext = container.mainContext
-        return AlarmCell(alarm: Alarm.preview1, modelContext: modelContext)
-    }catch {
-        return Text("Error")
-    }
-    
+    let alarmViewModel = AlarmViewModel(dataSource: .shared)
+    AlarmCell(alarmViewModel: alarmViewModel, alarm: Alarm.preview1)
 }

@@ -8,11 +8,43 @@
 import SwiftUI
 
 struct PickDatesView: View {
+    
+    @Binding var days: [Days]
+    @State private var selectedDays: Set<Days> = []
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        VStack {
+            Form {
+                ForEach(Days.allCases, id: \.self) { day in
+                    Button {
+                        if selectedDays.contains(day) {
+                            selectedDays.remove(day)
+                        }else {
+                            selectedDays.insert(day)
+                        }
+                        
+                        saveDays()
+                    }label: {
+                        HStack {
+                            Image(systemName: "checkmark")
+                                .opacity(selectedDays.contains(day) ? 1 : 0)
+                            Text(day.localizedName)
+                                .foregroundStyle(.white)
+                        }
+                    }
+                }
+            }
+        }
+        .onAppear {
+            selectedDays = Set(days)
+        }
+    }
+    
+    private func saveDays() {
+        days = Array(selectedDays).sorted()
     }
 }
 
 #Preview {
-    PickDatesView()
+    PickDatesView(days: .constant([]))
 }

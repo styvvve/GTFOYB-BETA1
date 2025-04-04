@@ -11,19 +11,14 @@ import SwiftData
 @main
 struct GTFOYBApp: App {
     
-    let container: ModelContainer
+    @StateObject var alarmViewModel: AlarmViewModel = AlarmViewModel(dataSource: .shared)
+    @StateObject var userViewModel: UserViewModel = UserViewModel(dataSource: .shared)
     
     var body: some Scene {
         WindowGroup {
-            ContentView()
-        }
-        .modelContainer(for: Alarm.self)
-    }
-    init() {
-        do {
-            container = try ModelContainer(for: Alarm.self)
-        }catch {
-            fatalError("Failed to initialize ModelContainer: \(error)")
+            HomeView()
+                .environmentObject(alarmViewModel)
+                .environmentObject(userViewModel)
         }
     }
 }
