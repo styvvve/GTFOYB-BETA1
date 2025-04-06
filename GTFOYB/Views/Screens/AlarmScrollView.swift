@@ -34,17 +34,22 @@ struct AlarmScrollView: View {
                 }
             }
             .navigationTitle(Text("Alarms"))
-            .toolbar {
-                ToolbarItem {
-                    Button {
-                        addNewAlarmScreenIsPresenting.toggle()
-                    }label: {
-                        Image(systemName: "plus")
-                    }
-                }
-            }
             .fullScreenCover(isPresented: $addNewAlarmScreenIsPresenting) {
                 AddOrEditAlarm(editMode: false, alarm: nil, addOrEditAlarmScreenIsPresenting: $addNewAlarmScreenIsPresenting)
+            }
+            .overlay(alignment: .bottomTrailing) {
+                Button {
+                    addNewAlarmScreenIsPresenting.toggle()
+                }label: {
+                    ZStack {
+                        Circle()
+                            .frame(width: 60, height: 60)
+                        
+                        Image(systemName: "plus")
+                            .foregroundStyle(.black)
+                    }
+                    .padding()
+                }
             }
         }
     }

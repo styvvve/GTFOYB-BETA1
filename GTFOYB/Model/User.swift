@@ -11,7 +11,7 @@ class UserPreferences: ObservableObject {
     @Published var name: String
     @Published var darkMode: Bool
     
-    init(name: String, darkMode: String) {
+    init(name: String, darkMode: Bool) {
         self.name = name
         self.darkMode = true
     }

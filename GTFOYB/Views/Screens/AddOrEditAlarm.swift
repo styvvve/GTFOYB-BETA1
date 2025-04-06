@@ -118,17 +118,9 @@ struct AddOrEditAlarm: View, alarmEditModeRequirement {
                                 existingAlarm.days = days
                                 existingAlarm.mission = missions
                             }
-                            alarmViewModel.saveContext()
                             dismiss() //on ferme l écran
                         }else {
-                            let newAlarm = Alarm(
-                                name: name.isEmpty ? "Alarm" : name,
-                                time: time,
-                                ringtone: ringtone,
-                                isActive: isActive,
-                                days: days,
-                                mission: missions)
-                            alarmViewModel.addAlarm(newAlarm)
+                            alarmViewModel.addAlarm(name: name, time: time, ringtone: ringtone, isActive: isActive, days: days, mission: missions)
                             addOrEditAlarmScreenIsPresenting.toggle()
                         }
                     }
