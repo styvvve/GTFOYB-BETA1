@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import SwiftData
 
 //si on passe en mode edit = une alarme doit etre fournie
 protocol alarmEditModeRequirement {
@@ -18,7 +17,6 @@ struct AddOrEditAlarm: View, alarmEditModeRequirement {
     
     //instance de viewModel
     @EnvironmentObject var alarmViewModel: AlarmViewModel
-    @EnvironmentObject var userViewModel: UserViewModel
     
     //pour fermer l écran
     @Environment(\.dismiss) var dismiss
@@ -58,7 +56,6 @@ struct AddOrEditAlarm: View, alarmEditModeRequirement {
                 .datePickerStyle(.wheel)
                 
                 Form {
-                    Section(header: editMode ? Text("Change your alarm") : Text("Create a new alarm")) {
                         HStack {
                             Text("Name")
                             Spacer()
@@ -101,7 +98,6 @@ struct AddOrEditAlarm: View, alarmEditModeRequirement {
                             Spacer()
                         }
                     }
-                }
             }
             .toolbar {
                 if !editMode {

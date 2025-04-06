@@ -10,14 +10,12 @@ import SwiftData
 
 struct HomeView: View {
     
-    //on prend des instances des deux viewModel
-    @EnvironmentObject var alarmViewModel: AlarmViewModel
-    @EnvironmentObject var userViewModel: UserViewModel
+    @StateObject var alarmViewModel: AlarmViewModel = AlarmViewModel()
     
     var body: some View {
         TabView {
             Tab("Alarms", systemImage: "alarm.fill") {
-                AlarmScrollView()
+                AlarmScrollView(alarmViewModel: alarmViewModel)
             }
             
             Tab("Sleep", systemImage: "moon.fill") {
@@ -32,9 +30,5 @@ struct HomeView: View {
 }
 
 #Preview {
-    let alarmViewModel = AlarmViewModel(dataSource: .shared)
-    let userViewModel = UserViewModel(dataSource: .shared)
     HomeView()
-        .environmentObject(alarmViewModel)
-        .environmentObject(userViewModel)
 }

@@ -6,17 +6,13 @@
 //
 
 import Foundation
-import SwiftData
 
-@Model
-class User {
-    var id = UUID()
-    var name: String
-    var ringtonesLibrary: [String]
+class UserPreferences: ObservableObject {
+    @Published var name: String
+    @Published var darkMode: Bool
     
-    init(id: UUID = UUID(), name: String, ringtonesLibrary: [String]) {
-        self.id = id
+    init(name: String, darkMode: String) {
         self.name = name
-        self.ringtonesLibrary = ringtonesLibrary
+        self.darkMode = true
     }
 }

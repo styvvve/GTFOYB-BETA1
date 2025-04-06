@@ -10,9 +10,7 @@ import SwiftData
 
 struct AlarmScrollView: View {
     
-    //une extension du viewModel
-    @EnvironmentObject var alarmViewModel: AlarmViewModel
-    @EnvironmentObject var userViewModel: UserViewModel
+    @ObservedObject var alarmViewModel: AlarmViewModel
     
     //pour ouvrir ou fermer l'écran dans le sens inverse
     @State var addNewAlarmScreenIsPresenting = false
@@ -52,6 +50,8 @@ struct AlarmScrollView: View {
     }
 }
 
-#Preview {
-    AlarmScrollView()
+struct AlarmScrollView_Previews: PreviewProvider {
+    static var previews: some View {
+        AlarmScrollView(alarmViewModel: MockAlarmViewModel())
+    }
 }
