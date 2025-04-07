@@ -10,7 +10,7 @@ import SwiftData
 
 struct AlarmScrollView: View {
     
-    @ObservedObject var alarmViewModel: AlarmViewModel
+    @EnvironmentObject var alarmViewModel: AlarmViewModel
     
     //pour ouvrir ou fermer l'écran dans le sens inverse
     @State var addNewAlarmScreenIsPresenting = false
@@ -24,11 +24,17 @@ struct AlarmScrollView: View {
                         .italic()
                         .foregroundStyle(.gray)
                 }else {
+                    HStack {
+                        Text("Next alarm in ")
+                            .bold()
+                        Spacer()
+                    }
+                    .padding()
                     ForEach(alarmViewModel.alarms) { alarm in
                         NavigationLink {
                             AddOrEditAlarm(editMode: true, alarm: alarm, addOrEditAlarmScreenIsPresenting: $addNewAlarmScreenIsPresenting)
                         }label: {
-                            AlarmCell(alarmViewModel: alarmViewModel, alarm: alarm)
+                            AlarmCell(alarm: alarm)
                         }
                     }
                 }
@@ -57,6 +63,7 @@ struct AlarmScrollView: View {
 
 struct AlarmScrollView_Previews: PreviewProvider {
     static var previews: some View {
-        AlarmScrollView(alarmViewModel: MockAlarmViewModel())
+        AlarmScrollView()
+            .environmentObject(AlarmViewModel.previews)
     }
 }

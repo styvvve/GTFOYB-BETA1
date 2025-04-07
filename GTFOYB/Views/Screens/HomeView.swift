@@ -10,17 +10,14 @@ import SwiftData
 
 struct HomeView: View {
     
-    @StateObject var alarmViewModel: AlarmViewModel = AlarmViewModel()
+    @EnvironmentObject var alarmViewModel: AlarmViewModel
     
     var body: some View {
         TabView {
             Tab("Alarms", systemImage: "alarm.fill") {
-                AlarmScrollView(alarmViewModel: alarmViewModel)
+                AlarmScrollView()
             }
             
-            Tab("Sleep", systemImage: "moon.fill") {
-                
-            }
             
             Tab("Settings", systemImage: "gear") {
                 
@@ -31,4 +28,5 @@ struct HomeView: View {
 
 #Preview {
     HomeView()
+        .environmentObject(AlarmViewModel.previews) 
 }

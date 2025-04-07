@@ -11,7 +11,7 @@ import SwiftData
 struct AlarmCell: View {
     
     //une instance de viewModel
-    @ObservedObject var alarmViewModel: AlarmViewModel
+    @EnvironmentObject var alarmViewModel: AlarmViewModel
     
     @Bindable var alarm: Alarm //bindable donne un objet observable pour le swiftdata
     
@@ -85,6 +85,5 @@ struct AlarmCell: View {
 }
 
 #Preview {
-    let alarmViewModel = AlarmViewModel(dataSource: .shared)
-    AlarmCell(alarmViewModel: alarmViewModel, alarm: Alarm.preview1)
+    AlarmCell(alarm: Alarm.preview1)
 }

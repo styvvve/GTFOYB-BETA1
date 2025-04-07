@@ -50,13 +50,14 @@ class AlarmViewModel: ObservableObject {
 
 
 //une version pour la preview
-final class MockAlarmViewModel: AlarmViewModel {
-    override init(dataSource: SwiftDataService = .shared) {
-        super.init(dataSource: dataSource)
-        self.alarms = [
+extension AlarmViewModel {
+    static var previews: AlarmViewModel {
+        let vm = AlarmViewModel()
+        vm.alarms = [
             Alarm(name: "test", time: Date(), ringtone: "ringtone1", isActive: true, days: [.friday, .monday], mission: .mathChallenge),
             Alarm(name: "test2", time: Date().addingTimeInterval(3600), ringtone: "ringtone2", isActive: false, days: [.monday, .tuesday, .wednesday], mission: .shakePhone)
             
         ]
+        return vm
     }
 }

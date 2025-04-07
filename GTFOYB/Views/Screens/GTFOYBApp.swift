@@ -10,9 +10,13 @@ import SwiftData
 
 @main
 struct GTFOYBApp: App {
+    
+    @StateObject var alarmViewModel: AlarmViewModel = AlarmViewModel()
+    
     var body: some Scene {
         WindowGroup {
             HomeView()
+                .environmentObject(alarmViewModel)
         }
     }
 }
