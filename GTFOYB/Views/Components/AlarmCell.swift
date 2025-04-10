@@ -10,9 +10,6 @@ import SwiftData
 
 struct AlarmCell: View {
     
-    //une instance de viewModel
-    @EnvironmentObject var alarmViewModel: AlarmViewModel
-    
     @Bindable var alarm: Alarm //bindable donne un objet observable pour le swiftdata
     
     let cellColor = Color(UIColor(red: 20 / 255, green: 19 / 255, blue: 19 / 255, alpha: 1))

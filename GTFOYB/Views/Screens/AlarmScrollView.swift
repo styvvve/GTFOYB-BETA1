@@ -10,7 +10,9 @@ import SwiftData
 
 struct AlarmScrollView: View {
     
-    @EnvironmentObject var alarmViewModel: AlarmViewModel
+    @Environment(DependencyContainer.self) private var container
+    @Environment(DataManager.self) private var dataManager
+    @State var viewModel: AlarmViewModel
     
     //pour ouvrir ou fermer l'écran dans le sens inverse
     @State var addNewAlarmScreenIsPresenting = false
@@ -18,7 +20,7 @@ struct AlarmScrollView: View {
     var body: some View {
         NavigationView {
             ScrollView {
-                if alarmViewModel.alarms.isEmpty {
+                if viewModel.datas.isEmpty {
                     Text("Add a new alarm by clicking on the plus button")
                         .padding()
                         .italic()
@@ -30,7 +32,7 @@ struct AlarmScrollView: View {
                         Spacer()
                     }
                     .padding()
-                    ForEach(alarmViewModel.alarms) { alarm in
+                    ForEach(viewModel.datas) { alarm in
                         NavigationLink {
                             AddOrEditAlarm(editMode: true, alarm: alarm, addOrEditAlarmScreenIsPresenting: $addNewAlarmScreenIsPresenting)
                         }label: {
@@ -61,9 +63,14 @@ struct AlarmScrollView: View {
     }
 }
 
-struct AlarmScrollView_Previews: PreviewProvider {
-    static var previews: some View {
-        AlarmScrollView()
-            .environmentObject(AlarmViewModel.previews)
-    }
+#Preview("Empty List") {
+    AlarmScrollView(viewModel: AlarmViewModel(interactor: CoreInteractor(container: DevPreview.shared.container)))
+        .previewEnvironment()
+}
+
+#Preview("Mock Data") {
+    let viewModel = AlarmViewModel(interactor: MockAlarmInteractor())
+    
+    return AlarmScrollView(viewModel: viewModel)
+        .previewEnvironment()
 }
