@@ -12,7 +12,7 @@ struct AlarmScrollView: View {
     
     @Environment(DependencyContainer.self) private var container
     @Environment(DataManager.self) private var dataManager
-    @State var viewModel: AlarmViewModel
+    @Binding var viewModel: AlarmViewModel
     
     //pour ouvrir ou fermer l'écran dans le sens inverse
     @State var addNewAlarmScreenIsPresenting = false
@@ -34,7 +34,7 @@ struct AlarmScrollView: View {
                     .padding()
                     ForEach(viewModel.datas) { alarm in
                         NavigationLink {
-                            AddOrEditAlarm(editMode: true, alarm: alarm, addOrEditAlarmScreenIsPresenting: $addNewAlarmScreenIsPresenting)
+                            AddOrEditAlarm(viewModel: $viewModel, editMode: true, alarm: alarm, addOrEditAlarmScreenIsPresenting: $addNewAlarmScreenIsPresenting)
                         }label: {
                             AlarmCell(alarm: alarm)
                         }
@@ -43,7 +43,7 @@ struct AlarmScrollView: View {
             }
             .navigationTitle(Text("Alarms"))
             .fullScreenCover(isPresented: $addNewAlarmScreenIsPresenting) {
-                AddOrEditAlarm(editMode: false, alarm: nil, addOrEditAlarmScreenIsPresenting: $addNewAlarmScreenIsPresenting)
+                AddOrEditAlarm(viewModel: $viewModel, editMode: false, alarm: nil, addOrEditAlarmScreenIsPresenting: $addNewAlarmScreenIsPresenting)
             }
             .overlay(alignment: .bottomTrailing) {
                 Button {
@@ -64,13 +64,13 @@ struct AlarmScrollView: View {
 }
 
 #Preview("Empty List") {
-    AlarmScrollView(viewModel: AlarmViewModel(interactor: CoreInteractor(container: DevPreview.shared.container)))
+    AlarmScrollView(viewModel: .constant(AlarmViewModel(interactor: CoreInteractor(container: DevPreview.shared.container))))
         .previewEnvironment()
 }
 
 #Preview("Mock Data") {
     let viewModel = AlarmViewModel(interactor: MockAlarmInteractor())
     
-    return AlarmScrollView(viewModel: viewModel)
+    AlarmScrollView(viewModel: .constant(viewModel))
         .previewEnvironment()
 }

@@ -10,23 +10,30 @@ import SwiftData
 
 struct HomeView: View {
     
-    @EnvironmentObject var alarmViewModel: AlarmViewModel
+    @State var viewModel: AlarmViewModel
     
     var body: some View {
         TabView {
             Tab("Alarms", systemImage: "alarm.fill") {
-                AlarmScrollView()
+                AlarmScrollView(viewModel: $viewModel)
             }
             
             
             Tab("Settings", systemImage: "gear") {
-                
+        
             }
         }
     }
 }
 
-#Preview {
-    HomeView()
-        .environmentObject(AlarmViewModel.previews) 
+#Preview("Empty List") {
+    HomeView(viewModel: AlarmViewModel(interactor: CoreInteractor(container: DevPreview.shared.container)))
+        .previewEnvironment()
+}
+
+#Preview("Mock Data") {
+    let viewModel = AlarmViewModel(interactor: MockAlarmInteractor())
+    
+    return HomeView(viewModel: viewModel)
+        .previewEnvironment()
 }

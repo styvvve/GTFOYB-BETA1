@@ -13,8 +13,7 @@ struct AlarmCell: View {
     @Bindable var alarm: Alarm //bindable donne un objet observable pour le swiftdata
     
     let cellColor = Color(UIColor(red: 20 / 255, green: 19 / 255, blue: 19 / 255, alpha: 1))
-    
-    //@Environment(\.modelContext) private var modelContext
+
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -37,6 +36,7 @@ struct AlarmCell: View {
         .clipShape(RoundedRectangle(cornerRadius: 20))
         .frame(maxWidth: .infinity)
         .padding(.horizontal, 20)
+
     }
     
     //MARK: Private components and subview

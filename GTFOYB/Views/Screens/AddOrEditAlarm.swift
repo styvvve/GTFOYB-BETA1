@@ -15,8 +15,10 @@ protocol alarmEditModeRequirement {
 
 struct AddOrEditAlarm: View, alarmEditModeRequirement {
     
-    //instance de viewModel
-    @EnvironmentObject var alarmViewModel: AlarmViewModel
+    //datas
+    @Environment(DependencyContainer.self) private var container
+    @Environment(DataManager.self) private var dataManager
+    @Binding var viewModel: AlarmViewModel
     
     //pour fermer l écran
     @Environment(\.dismiss) var dismiss
@@ -118,9 +120,10 @@ struct AddOrEditAlarm: View, alarmEditModeRequirement {
                                 existingAlarm.days = days
                                 existingAlarm.mission = missions
                             }
+                            viewModel.loadData()
                             dismiss() //on ferme l écran
                         }else {
-                            alarmViewModel.addAlarm(name: name, time: time, ringtone: ringtone, isActive: isActive, days: days, mission: missions)
+                            viewModel.addNewAlarm(name: name, time: time, ringtone: ringtone, isActive: isActive, days: days, mission: missions)
                             addOrEditAlarmScreenIsPresenting.toggle()
                         }
                     }
@@ -137,7 +140,8 @@ struct AddOrEditAlarm: View, alarmEditModeRequirement {
                     message: Text("No going back."),
                     primaryButton: .destructive(Text("Delete")) {
                         if let existingAlarm = alarm {
-                            alarmViewModel.deleteAlarm(existingAlarm)
+                            viewModel.onDelete(existingAlarm)
+                            viewModel.loadData()
                             dismiss()
                         }
                     },
@@ -184,6 +188,14 @@ struct AddOrEditAlarm: View, alarmEditModeRequirement {
     }
 }
 
-#Preview {
-    AddOrEditAlarm(editMode: true, alarm: nil, addOrEditAlarmScreenIsPresenting: .constant(false))
+#Preview("Empty List") {
+    AddOrEditAlarm(viewModel: .constant(AlarmViewModel(interactor: CoreInteractor(container: DevPreview.shared.container))), editMode: false, alarm: nil, addOrEditAlarmScreenIsPresenting: .constant(false))
+        .previewEnvironment()
+}
+
+#Preview("Mock Data") {
+    let viewModel = AlarmViewModel(interactor: MockAlarmInteractor())
+    
+    AddOrEditAlarm(viewModel: .constant(viewModel), editMode: false, alarm: nil, addOrEditAlarmScreenIsPresenting: .constant(false))
+        .previewEnvironment()
 }

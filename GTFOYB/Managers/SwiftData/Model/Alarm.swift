@@ -56,3 +56,7 @@ extension Alarm {
         ]
     }
 }
+
+extension Alarm {
+    static let preview1 = Alarm(name: "Alarm", time: Calendar.current.date(from: DateComponents(year: 2025, month: 2, day: 23, hour: 8, minute: 30)) ?? Date(), ringtone: "ringtone1", isActive: true, days: [.monday, .tuesday, .wednesday, .thursday, .friday], mission: WakeUpMission.mathChallenge)
+}
